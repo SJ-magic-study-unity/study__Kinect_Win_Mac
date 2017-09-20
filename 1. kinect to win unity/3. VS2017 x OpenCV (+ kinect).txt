@@ -1,0 +1,104 @@
+/************************************************************
+教科書に従い、Visual Studio (2017)のNuGetを使って、opencvをinstallした所、
+「openCVの関数がないよ」と怒られた(p33-)。
+
+どうやら、Visual Studio 2015以降のNuGetパッケージ管理に、opencv側が対応できていないらしい。
+そこで、openCVを手動でinstallしてリンクさせた。
+
+少しハマッたので、メモを残しておく。
+************************************************************/
+■Visual Studio 2017 x64 で OpenCV 3.2.0 を使う方法
+	http://phst.hateblo.jp/entry/2016/11/30/081749
+	
+	1.	download opencv.
+		http://opencv.org/releases.html
+		から
+			3.2.0
+			Win pack
+		をDL.
+		
+	2.	c直下に以下で展開(他のversionとの共存が可能なようにdir nameにversion infoを付加した.)
+		C:\opencv_320
+	
+	3.	http://phst.hateblo.jp/entry/2016/11/30/081749
+		に従ってproject設定するのですが、
+		その前に、visual studioを
+			★ Release/ x64 ★
+		に設定するのを忘れずに!!
+		otherwise:設定targetが異なってしまう.
+		
+		以下、URL先の手順を抜粋
+			ディレクトリ設定
+				プロパティページ -> VC++ディレクトリ -> インクルードディレクトリと､ライブラリディレクトリにそれぞれ
+				C:\opencv_320\build\include
+				C:\opencv_320\build\x64\vc14\lib
+				を追加｡ただし必要に応じてOpenCVをインストールした場所に変えること
+			
+			linker設定
+				プロパティページ -> リンカー -> 入力 -> 追加の依存ファイルに
+				opencv_world320.lib
+				を追加｡320のところはインストールしたOpenCVのバージョンによって変えること
+				
+			path設定
+				プロパティページ -> 構成プロパティ -> デバッグ -> 環境に
+					C:\opencv_320\build\x64\vc14\bin;%PATH%
+				を追加｡ただし必要に応じてOpenCVをインストールした場所に変えること
+	
+	4. 以下のsample programをコピペしてbuild check.
+			
+			#include <opencv2/opencv.hpp>
+			
+			using namespace cv;
+			int main()
+			{
+				//width220, height150の画像を作成
+				Mat src = Mat::zeros(150, 220, CV_8UC3);
+				
+				//赤色で画像にHello Worldを描く
+				putText(src, "Hello World", Point(5, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 200), 2, CV_AA);
+				
+				//緑色で画像に線を描く
+				line(src, Point(190, 25), Point(190, 45), Scalar(0, 200, 0), 3);
+				
+				//要素を直接操作し画像に点を描く
+				for (int x = 188; x < 192; x++)
+					for (int y = 53; y < 57; y++) //y座標
+						for (int i = 0; i < 2; i++) //i < 3にするとBGRすべての要素を200にする
+							src.at<uchar>(Point(x * 3 + i, y)) = saturate_cast<uchar>(200);
+							
+				
+				imshow("", src);
+				waitKey(0);
+				
+				return 0;
+			}
+	
+	5.	環境変数の設定
+		そのまま実行すると
+			opencv_world320.dll がない
+		と怒られる。
+		
+			C:\opencv_320\build\x64\vc14\bin
+		から毎回copyしてもよいが、
+		
+		環境変数からシステム環境変数のpathに以下を追加するとOK
+			C:\opencv_320\build\x64\vc14\bin
+
+
+■+ kinect
+	上に引き続き、教科書:p27 - p31 に従ってkinect設定
+	
+	But compile Error occured...(fprintf_s周り)
+	例えば、
+		D:\nobuhiro\source\kinect\DL_sample\K4W2-Book-master\C++(Native)\01_Color\KinectV2-Color-01\KinectV2
+	のsourceをコピペしてcompileすると、fprintf_sを使えとErrorが出る。
+	ところが、macではfprintf_sとか、ないので、これを無視してほしい.
+	
+	これを強制的にOKにするには、
+	codeの先頭(includeより前)に
+		#define _CRT_SECURE_NO_WARNINGS
+		
+	でOK.
+	
+
+

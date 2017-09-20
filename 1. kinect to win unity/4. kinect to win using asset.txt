@@ -1,0 +1,124 @@
+/************************************************************
+何も知らないと、色々と調べないと動かせない気がしてしまうが、実際の手数は非常に少なく、簡単.
+ここに記す手順を良く読んでtryすること.
+
+
+
+Assetを使って、簡単にkinect dataをwin unityに持ってくる(sample sceneを動かすだけ).
+
+この後、win -OSC-> macと送るが、
+unity-chanをdata portとして活用することを考える.
+以前、optitrack dataを反映させるためのscript開発にて、
+unity-chanを使ってgetpose/setposeして上手くいった経験から.
+Boneの構成(Boneの数、ヒエラルキ など)で動いたり動かなかったりするかもしれないので.
+
+と言うことで、
+sampleに倣って、scene上にunity-chanを置き、これにscriptをadd.
+************************************************************/
+■教科書のp79まで読み、sampleを動かした
+p79までであるが、c++、c#、など各アプリごとに「同じことをするための手順」が記されており、実際のボリュームは非常に少ない。
+ここまでを真面目に動かした。
+途中、visual studioにopencvをリンクする所で、visual studioのNuGetと言う機能で簡単にリンクする所でつまづいた。
+どうやら、visual studio 2017にopencvが対応できていないらしい。
+手動でopencvをinstallし、visual studioにリンクして解決(cf.3. VS2017 x OpenCV (+ kinect).txt)
+
+この段階で、
+教科書の勉強は非常にprimitiveで勉強になるが、Goalにたどり着くのに、近道がありそうな雰囲気を感じた。
+ちなみに、この後の教科書の内容は以下の通り:
+	$3の残り	赤外線画像の表示/ 人の検出 など、各primitiveな機能の使い方.
+				テキスト読むだけでOK
+	$4			応用なので、今回は不要
+	$5			kinectの各種toolについて：不要
+	$6			kinectをunityで使用するための説明
+				真面目に読んでもいいが、調査の結果、Assetを使ってしまえばいい(Assetの方が簡単かつ精度も高い)ことがわかっているので、不要
+	$7			7.3で、kinect x unity-chan の説明があり、多分きちんと読めばタメになるが、Assetで動かしてしまうので、不要.
+	$8			数学の勉強
+	
+	
+■unity x 「Kinect v2withMS-SDKアセット」
+Kinect v2withMS-SDKアセットがunity5.5以降だと言うので、unity5.5をinstall.
+install先のフォルダ名を変更することで、複数バージョンのunityを入れることができるので、必要なら複数バージョンを入れても良い.
+
+Kinect v2withMS-SDKアセット をダウンロード.
+サンプル付きで$27であった。
+
+
+以下のURLに色々と情報がある: 2 と 4が有用.
+特に、4.の"How to run the demo scenes:"を良く読むこと.
+	1	Kinect v2でユニティちゃんを動かす（Kinect v2withMS-SDKアセット）
+			http://psychic-vr-lab.com/blog/unity/kinect-v2%E3%81%A7%E3%83%A6%E3%83%8B%E3%83%86%E3%82%A3%E3%81%A1%E3%82%83%E3%82%93%E3%82%92%E5%8B%95%E3%81%8B%E3%81%99%EF%BC%88kinect-v2withms-sdk%E3%82%A2%E3%82%BB%E3%83%83%E3%83%88%EF%BC%89/
+		
+	2	[続]Kinect v2でユニティちゃんを動かす（Kinect v2withMS-SDKアセット）
+			http://psychic-vr-lab.com/blog/unity/%E7%B6%9Akinect-v2%E3%81%A7%E3%83%A6%E3%83%8B%E3%83%86%E3%82%A3%E3%81%A1%E3%82%83%E3%82%93%E3%82%92%E5%8B%95%E3%81%8B%E3%81%99%EF%BC%88kinect-v2withms-sdk%E3%82%A2%E3%82%BB%E3%83%83%E3%83%88/
+		
+	3	Kinect Managerのプロパティについて | Kinect v2 with MS-SDK
+			http://icoc-dev.hatenablog.com/entry/2015/04/08/144129
+		
+	4	official page
+			https://rfilkov.com/2014/08/01/kinect-v2-with-ms-sdk/
+			
+Assetをimportすると、_Readme dirに
+	Readme-Kinect2-MsSdk.pdf
+があるので、そちらも良く読む.
+
+
+■ここから実際の手順
+・unity project:新規作成
+・import : Kinect v2 Examples with MS-SDK
+・open : scene = KinectDemos/AvatarsDemo/KinectAvatarDemo1
+	なんと、これを再生するだけで、avatarが動く!!
+
+・import : unity-chan
+	「ThirdPersonCameraがぶつかってます」と、Errorが出るので、
+		UnityChan/Scripts/ThirdPersonCamera
+	を削除.
+	
+		UnityChan/Models/unitychan
+	をscene内に配置し、position = 0, 0, 0
+	
+		KinectScripts/AvatarController
+	をadd
+	
+	unitychanをy軸周りに180deg回転させて前を向かせる.
+	
+以上で基本的な動作OK.
+
+
+
+
+/************************************************************
+other infos.
+************************************************************/
+■XBox One Kinectセンサー（ Kinect v2 ) 開発のはじめかた
+	http://qiita.com/takish/items/46b012079426edd89a3f
+	
+■Kinect開発者のための、Unityの基礎知識とインストール
+	http://www.buildinsider.net/small/bookkinectv2/0601
+
+■KINECT V2のフォーラムでよく見るのが「KINECT V2が動かない」というものです。
+	http://weathercook.hatenadiary.jp/entry/2015/01/01/235717
+	
+■自分で作った3DモデルをUnityとKinect v2を使って動かすまで
+	http://qiita.com/YuYuYuYoYoYo/items/907e3f62a6b9b8d8527a
+	
+■Kinectでユニティちゃんを動かす
+	http://www.buildinsider.net/small/bookkinectv2/0703
+	
+■kinect カメラ座標 単位(joint単位はカメラ座標)
+	https://blogs.msdn.microsoft.com/hirosho/2012/03/12/kinect-for-windows-sensor-sdk-6-skeleton-tracking/
+	
+	contents
+		[m]
+		z	:	センサからの距離
+		x,y	:	軸をセンターとした座標
+				センサに向かって右/上が正.
+	
+	
+■右手座標系⇔左手座標系 座標変換
+	http://k-key.hatenablog.com/entry/2016/08/18/141830
+	
+	
+
+
+
+

@@ -1,0 +1,12 @@
+/************************************************************
+************************************************************/
+■win machie : downloaded asset is saved in
+	https://docs.unity3d.com/jp/540/Manual/AssetStore.html
+	
+		C:\Users\accountName\AppData\Roaming\Unity\Asset Store
+			C:\Users\Nobuhiro
+			にて、表示タブの表示/非表示から隠しファイルをチェックしないと見えないので注意.
+			
+
+
+

@@ -1,0 +1,29 @@
+/************************************************************
+************************************************************/
+Å°Component/Physics/Rigidbody
+Mass					80
+Drag					0
+Augular Drag			0.05
+use Gravity				no
+Is Kinematic			yes
+Interpolate				None
+Collision Detection		Discrete
+
+Å°Avatar Controller
+check box
+	Mirrored Movement
+	Vertical Movement
+	Finger Orientations
+	
+	Grounded Feet
+	Apply Muscle Limits
+	
+value setting
+	Move Rate = 1
+	Smooth Factor = 10
+	Offset Node = None
+	Pos Relative To Camera = None
+
+
+
+

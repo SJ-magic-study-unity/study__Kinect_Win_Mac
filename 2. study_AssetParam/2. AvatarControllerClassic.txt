@@ -1,0 +1,128 @@
+/************************************************************
+************************************************************/
+■links listed in Readme
+	Online Documentation	: https://ratemt.com/k2docs/
+	Tip and Tricks			: http://rfilkov.com/2015/01/25/kinect-v2-tips-tricks-examples/
+	Web						: http://rfilkov.com/2014/08/01/kinect-v2-with-ms-sdk/
+
+
+
+/************************************************************
+scriptについて、
+Avatar Controllerでなく、Avatar Controller Classic を使うと、
+Objectごとに、Kinectによるcapture dataを反映させる/させないを設定できる。
+例えば、
+	下半身の精度が低いので、これを固定し、上半身のみの動作を見せたい
+などが可能になる。
+
+これを使いこなすため、どのparameterがどのObjectなのか調査した.
+************************************************************/
+■調査手順
+	■Scene = KinectAvatarsDemo3を起動
+	このSceneでは、Avatar Controller Classicを使用している.
+	
+	■
+	project viewから、プレファブの、
+	KinectDemos/AvatarsDemo/U_Character/Materials/U_Character_REFを選択
+	
+	Rigのconfigureから、RigとObjectのMappingをcheck.
+	Body, Head, Left/Right Handが別画面(ボタンで切り替え)でのcheckになるので注意すること.
+	
+	同様にunity-chanをプレファブから選択し、Rigをcheck
+	
+	■
+	scene上で、U_Characterには、Avatar Controller Classic scriptがaddされている。
+	script上の、どの項目にどのobjectが割り当てられているか、リストアップしていくと、下記の表が完成.
+	
+
+
+■対応 : 調査結果
+====================================================================================================================
+Rig							U_Character_REF		unity-chan						Avatar Controller Classic script(">"はSJの予想)
+--------------------------------------------------------------------------------------------------------------------
+Body
+	Hips					joint_Pelvis		Character1_Hips					> Hip Center
+	Spine					joint_TorsoA		Character1_Spine1				Spine
+	Chest					joint_TorsoB		Character1_Spine2				> Shoulder Center
+	
+LeftArm(RightArm)
+	Shoulder				joint_ClavicleLT	Character1_LeftShoulder			Clavicle Left
+	Upper Arm				joint_ShoulderLT	Character1_LeftArm				Shoulder Left
+	Lower Arm				joint_ElbowLT		Character1_LeftForeArm			Elbow Left
+	Hand					joint_HandLT		Character1_LeftHand				Hand Left
+	
+Left Leg(Right Leg)
+	Upper Leg				joint_HipLT			Character1_LeftUpLeg			> Hip Left
+	Lower Leg				joint_KneeLT		Character1_LeftLeg				> Knee Left
+	Foot					joint_FootLT		Character1_LeftFoot				> Foot Left
+	Toes					joint_ToeLT			Character1_LeftToeBase
+	
+Head
+	Neck					joint_Neck			Character1_Neck					Neck
+	Head					joint_Head			Character1_Head
+	Left Eye				joint_EyeLT			None
+	Right Eye				joint_EyeRT			None
+	Jaw						joint_CheekRT		None
+	
+LeftFingers(RightFingers)
+	Thumb Proximal			joint_ThumbALT		Character1_LeftHandThumb1		Thumb Left
+	Thumb Intermediate		joint_ThumbBLT		Character1_LeftHandThumb2
+	Thumb Distal			joint_ThumbCLT		Character1_LeftHandThumb3
+	
+	index Proximal			joint_indexALT		Character1_LeftHandIndex1		Fingers Left
+	Index Intermediate		joint_indexBLT		Character1_LeftHandIndex2
+	index Distal			joint_indexCLT		Character1_LeftHandIndex3
+	
+	Middle Proximal			joint_FingersALT	Character1_LeftHandMiddle1
+	Middle Intermediate		joint_FingersBLT	Character1_LeftHandMiddle2
+	Middle Distal			joint_FingersCLT	Character1_LeftHandMiddle3
+	
+	Ring Proximal			joint_RingALT		Character1_LeftHandRing1
+	Ring Intermediate		joint_RingBLT		Character1_LeftHandRing2
+	Ring Distal				joint_RingCLT		Character1_LeftHandRing3
+	
+	Little Proximal			joint_PinkyALT		Character1_LeftHandPinky1
+	Little Intermediate		joint_PinkyBLT		Character1_LeftHandPinky2
+	Little Distal			joint_PinkyCLT		Character1_LeftHandPinky3
+	
+--------------------------------------------------------------------------------------------------------------------
+Rig 外
+							joint_Char			Character1_Reference			> Body Root
+
+====================================================================================================================
+
+
+■「上半身のみにcapture dataの反映」の設定
+check box
+	Mirrored Movement
+	Finger Orientations
+	
+value setting
+	Move Rate = 1
+	Smooth Factor = 20
+	Offset Node = 固定Object(何らか、自分でScene上に置いたObject)
+
+Object対応表でNoneにする項目
+	Hip Center
+	(shoulder Center)	...あってもいいみたい
+	
+	Hip Left
+	Knee Left
+	Foot Left
+	
+	Hip Right
+	Knee Right
+	Foot Right
+	
+	Body Root
+	
+
+■advanced
+・	capture dataを反映した3d modelの関節位置にobjectを置くなど
+	例えば、関節位置からparticle(煙とか)を発生させる
+	
+		trace.cs
+		参考：unity教科書 p215
+
+
+
