@@ -35,13 +35,13 @@ steps
 		
 		■操作
 		win側
-			・	GetposeViaOSCをAsset下にCopy
-			・	setPose.cs, UnityOSC/OSCController.cs をsource object modelにadd.
+			・	SendPoseViaOSCをAsset下にCopy
+			・	getPose.cs, UnityOSC/OSCController.cs をsource object modelにadd.
 				Source AvatarをGUIから設定(prefabの元モデルから).
 				
 		mac側
-			・	SendPoseViaOSCをAsset下にCopy
-			・	getPose.cs, UnityOSC/OSCController.cs をdst object modelにadd.
+			・	GetposeViaOSCをAsset下にCopy
+			・	setPose.cs, UnityOSC/OSCController.cs をdst object modelにadd.
 				Dst AvatarをGUIから設定(prefabの元モデルから).
 				
 		で、OK.
